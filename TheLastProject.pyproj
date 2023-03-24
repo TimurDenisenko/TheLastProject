@@ -26,6 +26,7 @@
   <ItemGroup>
     <Content Include="error.ico" />
     <Content Include="leht.ico" />
+    <Content Include="pliiats.ico" />
     <Content Include="pliiats.png" />
     <Content Include="kodu.png" />
     <Content Include="2stick.png" />

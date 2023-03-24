@@ -124,7 +124,7 @@ def stuudio(win):
 
     var=IntVar()
 
-    rblt=Radiobutton(win,text="Lisage teema",font="Arial 20",fg="#ffc900",variable=var,value=1)
+    rblt=Radiobutton(win,text="Lisa teema",font="Arial 20",fg="#ffc900",variable=var,value=1)
     imgram=PhotoImage(file="raamat.png")
     imgram=imgram.subsample(9,9)
     lbllt=Label(win,image=imgram)
@@ -166,6 +166,9 @@ def stuvar(var,win):
     elif v==2:
         win.destroy()
         lisasona()
+    elif v==3:
+        win.destroy()
+        muudasona()
 
 def lisateema():
     win=Tk()
@@ -209,7 +212,7 @@ def error():
         er.title("Viga")
         er.resizable(width=False,height=False)
         er.iconbitmap("error.ico")
-        lbl=Label(er,text="Kontrollige, kas sisestatud väärtust pole olemas\n ja kas see pole tühi",font="Arial 13",justify=LEFT)
+        lbl=Label(er,text="Kontrolli, kas sisestatud väärtust pole olemas\n ja kas see pole tühi",font="Arial 13",justify=LEFT)
         lbl.pack(side=LEFT)
         er.mainloop()
 
@@ -264,6 +267,16 @@ def kontrollteema(entte,btnso,btnte,entso):
     else:
         entte.configure(bg="Red")
 
+def kontrollteema1(entte,btnso,btnte,entso):
+    nimi=entte.get()
+    nimi1=nimi
+    nimi1+=".txt"
+    if path.isfile(nimi1): 
+        entte.configure(state="disabled")
+        btnte.configure(state="disabled")
+        btnso.configure(bg="Green",activeforeground="Green",state="normal",command=lambda: lisasonacom(nimi,entso,btnso))
+    else:
+        entte.configure(bg="Red")
 
 def lisasona():
     win=Tk()
@@ -291,13 +304,55 @@ def lisasona():
     btn.place(x=0,y=0)
 
     lbl.place(x=155,y=40)
-    lbllt.place(x=420,y=45)
+    lbllt.place(x=390,y=45)
     lblteema.place(x=30,y=200)
     entte.place(x=50,y=250)
     btnte.place(x=55,y=300)
     lblsona.place(x=380,y=200)
     entso.place(x=380,y=250)
     btnso.place(x=382,y=300)
+
+    win.mainloop()
+
+def muudasona():
+    win=Tk()
+    win.geometry("600x600")
+    win.resizable(width=False,height=False)
+    win.title("Muuda sõna")
+    win.iconbitmap("pliiats.ico")
+
+    lbl=Label(win,text="Muuda sõna",font="Arial 40")
+    imgpl=PhotoImage(file="pliiats.png")
+    imgpl=imgpl.subsample(11,11)
+    lblpl=Label(win,image=imgpl)
+
+    lblmusona=Label(win,text="Kirjuta vale sõna",font="Arial 20")
+    entmuso=Entry(win,font="Arial 15",width=16,fg="#00008b")
+
+    lblsona=Label(win,text="Kirjuta uus sõna",font="Arial 20")
+    entso=Entry(win,font="Arial 15",width=16,fg="#00008b")
+
+    btnmuuda=Button(win,text="Muuda",font="Arial 18",width=20,state="disabled",bg="Red",activeforeground="Red")
+
+    lblteema=Label(win,text="Kirjuta olemasolev teema ",font="Arial 20")
+    entte=Entry(win,font="Arial 15",width=25,fg="#00008b")
+    btnte=Button(win,text="Kontrollima",font="Arial 18",width=20,bg="Green",fg="White",activeforeground="Green")
+
+    img=PhotoImage(file="kodu.png")
+    img=img.subsample(9,9)
+    btn=Button(win,image=img,command=lambda: kodu(win))
+    btn.place(x=0,y=0)
+
+    lbl.place(x=155,y=40)
+    lblpl.place(x=450,y=40)
+    lblteema.place(x=155,y=150)
+    entte.place(x=170,y=200)
+    btnte.place(x=165,y=250)
+    lblmusona.place(x=50,y=320)
+    entmuso.place(x=60,y=370)
+    lblsona.place(x=350,y=320)
+    entso.place(x=360,y=370)
+    btnmuuda.place(x=165,y=430)
 
     win.mainloop()
 
