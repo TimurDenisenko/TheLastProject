@@ -24,9 +24,13 @@
     <Compile Include="TheLastProject.py" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="error.ico" />
+    <Content Include="leht.ico" />
+    <Content Include="pliiats.png" />
     <Content Include="kodu.png" />
     <Content Include="2stick.png" />
     <Content Include="molklu.ico" />
+    <Content Include="raamat.ico" />
     <Content Include="raamat.png" />
     <Content Include="robot.png" />
     <Content Include="stick.png" />
