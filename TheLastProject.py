@@ -1,7 +1,9 @@
 from tkinter import *
+from tkinter import ttk
 from random import *
 import io as io 
 from os import *
+from re import *
 
 def loe(file):
     tem=[]
@@ -90,7 +92,7 @@ def rez(win):
     imgmulti=imgmulti.subsample(9,9)
     lblmulti=Label(win,image=imgmulti)
 
-    btnmang=Button(win,text="Mängi",font="Arial 20",width=19,bg="Green",fg="White",activeforeground="Green")
+    btnmang=Button(win,text="Mängi",font="Arial 20",width=19,bg="Green",fg="White",activeforeground="Green",command=lambda: rezvar(var,win))
 
     img=PhotoImage(file="kodu.png")
     img=img.subsample(9,9)
@@ -106,6 +108,244 @@ def rez(win):
     rbmulti.place(x=165,y=360)
     lblmulti.place(x=390,y=350)
     btnmang.place(x=150,y=450)
+
+    win.mainloop()
+
+def rezvar(var,win):
+    v=var.get()
+    if v==1:
+        win.destroy()
+        solomang("Üksikmängija mäng","stick.png",9,465,50,"stick.ico")
+    if v==2:
+        win.destroy()
+        solomang("Robotimäng","robot.png",15,350,20,"robot.ico")
+
+def solomang(nimi,img1,n,x1,y1,ico1):
+    win=Tk()
+    win.resizable(width=False,height=False)
+    win.geometry("600x600")
+    win.title(nimi)
+    win.iconbitmap(ico1)
+
+    lbl=Label(win,text=nimi,font="Arial 30")
+    imgsolo=PhotoImage(file=img1)
+    imgsolo=imgsolo.subsample(n,n)
+    lblsolo=Label(win,image=imgsolo)
+
+    lblnimi=Label(win,text="Kirjuta sinu nimi:",font="Arial 20")
+    entnimi=Entry(win,font="Arial 20",fg="Blue",width=13)
+
+    var=IntVar()
+
+    rbr=Radiobutton(win,text="Vali teema juhuslikult",font="Arial 20",fg="Purple",variable=var,value=1)
+    rbi=Radiobutton(win,text="Vali oma teema",font="Arial 20",fg="Purple",variable=var,value=2)
+
+    btnv=Button(win,text="Valmis",font="Arial 20",width=19,fg="White",bg="Green",activeforeground="Green",command=lambda: solomang2(entnimi,var,rbr,rbi,win))
+
+    img=PhotoImage(file="kodu.png")
+    img=img.subsample(9,9)
+    btn=Button(win,image=img,command=lambda: kodu(win))
+    btn.place(x=0,y=0)
+
+    lbl.place(x=120,y=50)
+    lblsolo.place(x=x1,y=y1)
+    lblnimi.place(x=50,y=200)
+    entnimi.place(x=50,y=250)
+    rbr.place(x=300,y=200)
+    rbi.place(x=300,y=250)
+    btnv.place(x=120,y=330)
+
+    win.mainloop()
+
+def solomang2(entnimi,var,rbr,rbi,win):
+    nimi=entnimi.get()
+    global sona1
+    if len(nimi)!=0:
+        entnimi.configure(bg="White")
+        v=var.get()
+        if v in [1,2]:
+            rbr.configure(fg="Purple")
+            rbi.configure(fg="Purple")
+            teemad=otsifiletxt()
+            if v==1:
+                teema=choice(teemad)
+                teema+=".txt"
+                sona=choice(filetolist(teema)) 
+            else:
+                valiteema(win,entnimi) 
+            sona1=sona 
+            solomang3(win,entnimi)
+        else:
+            rbr.configure(fg="Red")
+            rbi.configure(fg="Red")
+    else:
+        entnimi.configure(bg="Red")
+
+def otsifiletxt():
+    teemad=[]
+    files=listdir(getcwd())
+    for i in files: 
+        if i.endswith(".txt"):
+            i=sub(".txt","",i)
+            teemad.append(i)
+    return teemad
+
+def valiteema(win,entnimi):
+    win.destroy()
+    win=Tk()
+    win.title("Vali teema")
+    win.geometry("300x400")
+    win.resizable(width=False,height=True)
+
+    teemad=otsifiletxt()
+
+    lbl=Label(win,text="Vali teema",font="Arial 20")
+    cb=ttk.Combobox(win,values=teemad)
+    btn=Button(win,text="Vali",font="Arial 20",width=10,bg="Green",fg="White",activeforeground="Green",command=lambda: retvar(cb,win,btn,entnimi))
+
+    lbl.pack()
+    cb.pack()
+    btn.pack(side=BOTTOM)
+
+    win.mainloop()
+
+def retvar(cb,win,btn,entnimi):
+    global v1
+    v1=cb.get()
+    teemad=otsifiletxt()
+    if v1 not in teemad:
+        btn.configure(bg="Red")
+    else:
+        btn.configure(bg="White")
+        v1+=".txt"
+        sona=choice(filetolist(v1)) 
+        global sona1 
+        sona1=sona 
+        solomang3(win,entnimi)
+
+lst=None
+vimg="v0.png"
+
+def mang(win,ent,lblsona,lblvis,lblk):
+    a=ent.get()
+    global sona1, lst, vimg
+    sonalst=list(sona1.lower())
+    a=a.lower()
+    if len(a)==1 and a.isalpha() or a==" ":
+        ent.configure(bg="white")
+        if a in sonalst:
+            lblk.configure(text=":)",font="Arial 100")
+            ind=sonalst.index(a)
+            if ind==0:
+                a=a.upper()
+            print(a)
+            lst[ind]=a
+            sonalst=lst
+            sona1=sona1.replace(a,"*",1)
+            if a.lower() in sona1: 
+                mang(win,ent,lblsona,lblvis,lblk)
+            sona=" ".join(sonalst)
+            lblsona.configure(text=sona)
+            if "_" not in sonalst:
+                win.destroy()
+                win=Tk()
+                win.geometry("300x300")
+                win.title("Võit")
+                win.iconbitmap("win.ico")
+                win.resizable(width=False,height=False)
+
+                lbl=Label(win,text="Võit!",font="Arial 30")
+                imgk=PhotoImage(file="win.png")
+                imgk=imgk.subsample(2,2)
+                lblk=Label(win,image=imgk)
+
+                img=PhotoImage(file="kodu.png")
+                img=img.subsample(9,9)
+                btn=Button(win,image=img,command=lambda: kodu(win))
+                btn.place(x=0,y=0) 
+
+                lbl.place(x=100,y=5)
+                lblk.place(x=20,y=50)
+
+                win.mainloop()
+        else:
+            lblk.configure(text=":(",font="Arial 100")
+            vimg=list(vimg)
+            vimg[1]=str(int(vimg[1])+1) 
+            vimg="".join(vimg)
+            if vimg=="v20.png":
+                win.destroy()
+                win=Tk()
+                win.geometry("300x300")
+                win.title("Kaotamas")
+                win.iconbitmap("lose.ico")
+                win.resizable(width=False,height=False)
+
+                lbl=Label(win,text="Kaotamas!",font="Arial 30")
+                imgk=PhotoImage(file="lose.png")
+                imgk=imgk.subsample(2,2)
+                lblk=Label(win,image=imgk)
+
+                img=PhotoImage(file="kodu.png")
+                img=img.subsample(9,9)
+                btn=Button(win,image=img,command=lambda: kodu(win))
+                btn.place(x=0,y=0) 
+
+                lbl.place(x=70,y=5)
+                lblk.place(x=20,y=50)
+
+                win.mainloop()
+            vimg1=vimg
+            vimg1=PhotoImage(file=vimg1)
+            vimg1.photo=vimg1
+            lblvis.destroy() 
+            lblvis=Label(win,image=vimg1)
+            lblvis.place(x=50,y=100)
+    else:
+        ent.configure(bg="Red")
+
+def solomang3(win,entnimi):
+    win.destroy()
+    global sona1,lst,vimg
+    sona=lst=sona1
+    for i in sona:
+        sona=sona.replace(i,"_ ")
+    lst=list(lst)
+    for i in range(len(lst)):
+        lst[i]="_"
+    win=Tk()
+    win.geometry("1280x800")
+    win.title("Üksikmängija mäng")
+    win.resizable(width=False,height=False)
+    win.iconbitmap("stick.ico")
+
+    lbl=Label(win,text="Üksikmängija mäng",font="Arial 30")
+    imgsolo=PhotoImage(file="stick.png")
+    imgsolo=imgsolo.subsample(9,9)
+    lblsolo=Label(win,image=imgsolo)
+
+    vimg1=PhotoImage(file="v0.png")
+    lblvis=Label(win,image=vimg1)
+
+    lblk=Label(win)
+
+    lblsona=Label(win,text=sona,font="Arial 25")
+    ent=Entry(win,font="Arial 20",width=3)
+    print(sona1)
+    btnvod=Button(win,text="Proovida",font="Arial 20",bg="Purple",fg="White",activeforeground="Purple",command=lambda: mang(win,ent,lblsona,lblvis,lblk))
+
+    img=PhotoImage(file="kodu.png")
+    img=img.subsample(9,9)
+    btn=Button(win,image=img,command=lambda: kodu(win))
+    btn.place(x=0,y=0)    
+
+    lbl.place(x=120,y=40)
+    lblsolo.place(x=465,y=40)
+    lblsona.place(x=50,y=520)
+    ent.place(x=50,y=620)
+    btnvod.place(x=150,y=620)
+    lblvis.place(x=50,y=100)
+    lblk.place(x=1000,y=200)
 
     win.mainloop()
 
@@ -243,7 +483,7 @@ def listtofile(lst,file):
     with io.open(file,"w",encoding="utf-8-sig") as f:
         f.writelines(lst1)
 
-def lisasonacom(nimi,entso,btnso):
+def lisasonacom(nimi,entso,btnso,x=None):
     sona=entso.get()
     nimi+=".txt"
     lst=filetolist(nimi)
@@ -256,25 +496,14 @@ def lisasonacom(nimi,entso,btnso):
         btnso.configure(bg="Red")
         error()
 
-def kontrollteema(entte,btnso,btnte,entso):
+def kontrollteema(entte,btnso,btnte,entso,func,entmuso=None):
     nimi=entte.get()
     nimi1=nimi
     nimi1+=".txt"
     if path.isfile(nimi1): 
         entte.configure(state="disabled")
         btnte.configure(state="disabled")
-        btnso.configure(bg="Green",activeforeground="Green",state="normal",command=lambda: lisasonacom(nimi,entso,btnso))
-    else:
-        entte.configure(bg="Red")
-
-def kontrollteema1(entte,btnso,btnte,entso):
-    nimi=entte.get()
-    nimi1=nimi
-    nimi1+=".txt"
-    if path.isfile(nimi1): 
-        entte.configure(state="disabled")
-        btnte.configure(state="disabled")
-        btnso.configure(bg="Green",activeforeground="Green",state="normal",command=lambda: lisasonacom(nimi,entso,btnso))
+        btnso.configure(bg="Green",activeforeground="Green",state="normal",command=lambda: func(nimi,entso,btnso,entmuso))
     else:
         entte.configure(bg="Red")
 
@@ -296,7 +525,7 @@ def lisasona():
 
     lblteema=Label(win,text="Kirjuta olemasolev teema ",font="Arial 20")
     entte=Entry(win,font="Arial 15",width=23,fg="#00008b")
-    btnte=Button(win,text="Kontrollima",font="Arial 18",width=17,bg="Green",fg="White",activeforeground="Green",command=lambda: kontrollteema(entte,btnso,btnte,entso))
+    btnte=Button(win,text="Kontrollima",font="Arial 18",width=17,bg="Green",fg="White",activeforeground="Green",command=lambda: kontrollteema(entte,btnso,btnte,entso,lisasonacom))
 
     img=PhotoImage(file="kodu.png")
     img=img.subsample(9,9)
@@ -313,6 +542,25 @@ def lisasona():
     btnso.place(x=382,y=300)
 
     win.mainloop()
+
+def muudasonacom(nimi,entso,btnso,entmuso):
+    nimi+=".txt"
+    lst=filetolist(nimi) 
+    valesona=entmuso.get()
+    uussona=entso.get()
+    if valesona in lst:
+        entmuso.configure(bg="White")
+        if uussona not in lst:
+            entso.configure(bg="White")
+            i=lst.index(valesona)
+            lst[i]=uussona 
+            entmuso.delete(0,END)
+            entso.delete(0,END)
+            listtofile(lst,nimi)
+        else:
+            entso.configure(bg="Red")
+    else:
+        entmuso.configure(bg="Red")
 
 def muudasona():
     win=Tk()
@@ -332,11 +580,11 @@ def muudasona():
     lblsona=Label(win,text="Kirjuta uus sõna",font="Arial 20")
     entso=Entry(win,font="Arial 15",width=16,fg="#00008b")
 
-    btnmuuda=Button(win,text="Muuda",font="Arial 18",width=20,state="disabled",bg="Red",activeforeground="Red")
+    btnmuuda=Button(win,text="Muuda",font="Arial 18",width=20,state="disabled",bg="Red",fg="White",activeforeground="Red",)
 
     lblteema=Label(win,text="Kirjuta olemasolev teema ",font="Arial 20")
     entte=Entry(win,font="Arial 15",width=25,fg="#00008b")
-    btnte=Button(win,text="Kontrollima",font="Arial 18",width=20,bg="Green",fg="White",activeforeground="Green")
+    btnte=Button(win,text="Kontrollima",font="Arial 18",width=20,bg="Green",fg="White",activeforeground="Green",command=lambda: kontrollteema(entte,btnmuuda,btnte,entso,muudasonacom,entmuso))
 
     img=PhotoImage(file="kodu.png")
     img=img.subsample(9,9)

@@ -24,6 +24,12 @@
     <Compile Include="TheLastProject.py" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="robot.ico" />
+    <Content Include="loomad.txt" />
+    <Content Include="win.png" />
+    <Content Include="win.ico" />
+    <Content Include="lose.png" />
+    <Content Include="lose.ico" />
     <Content Include="error.ico" />
     <Content Include="leht.ico" />
     <Content Include="pliiats.ico" />
@@ -34,6 +40,7 @@
     <Content Include="raamat.ico" />
     <Content Include="raamat.png" />
     <Content Include="robot.png" />
+    <Content Include="stick.ico" />
     <Content Include="stick.png" />
     <Content Include="molklu.png" />
     <Content Include="lop.png" />
@@ -42,6 +49,17 @@
     <Content Include="brain.ico" />
     <Content Include="kool.txt" />
     <Content Include="petl.png" />
+    <Content Include="v0.png" />
+    <Content Include="v10.png" />
+    <Content Include="v9.png" />
+    <Content Include="v8.png" />
+    <Content Include="v7.png" />
+    <Content Include="v6.png" />
+    <Content Include="v5.png" />
+    <Content Include="v4.png" />
+    <Content Include="v3.png" />
+    <Content Include="v2.png" />
+    <Content Include="v1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
